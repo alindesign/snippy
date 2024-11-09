@@ -1,0 +1,14 @@
+{
+  "branches": [
+    "main"
+  ],
+  "repositoryUrl": "https://github.com/alindesign/snippy",
+  "plugins": [
+    [
+      "@semantic-release/github",
+      {
+        "successComment": false
+      }
+    ]
+  ]
+}
