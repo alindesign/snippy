@@ -15,9 +15,12 @@ Snippy is a simple one binary tool to manage your snippets.
 $ pnpm build
 $ ./snippy
 
-# or via docker
+# or via docker (local)
 $ docker build -t snippy .
-$ docker run -p 8080:8080 -v ./snippet.sqlite:/app/snippet.sqlite snippy
+$ docker run -it -p 8080:8080 -v ./db:/app snippy
+
+# or via docker (remote)
+$ docker run -it -p 8080:8080 -v ./db:/app ghcr.io/alindesign/snippy
 ```
 
 ## Features
