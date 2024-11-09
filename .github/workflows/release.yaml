@@ -7,10 +7,10 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: write
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,7 +27,8 @@ jobs:
         uses: pnpm/action-setup@v4
 
       - name: Set up SQLite
-        run: sudo apt-get install sqlite3 libsqlite3-dev
+        run: |
+          sudo apt-get -y install sqlite3 libsqlite3-dev
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

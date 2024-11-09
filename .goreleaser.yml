@@ -1,4 +1,5 @@
 project_name: snippy
+version: 2
 before:
   hooks:
     - go mod tidy
@@ -6,15 +7,11 @@ before:
     - pnpm codegen
 builds:
   - env: [CGO_ENABLED=1]
+    main: .
     goos:
       - linux
-      - windows
-      - darwin
     goarch:
       - amd64
-      - arm64
-      - arm
-    main: main.go
 archives:
   - format: tar.gz
 checksum:
@@ -24,44 +21,15 @@ dockers:
     goarch: amd64
     build_flag_templates:
       - "--platform=linux/amd64"
-    dockerfile: Dockerfile
+
+    dockerfile: release.Dockerfile
     image_templates:
       - ghcr.io/alindesign/snippy:{{ .Tag }}-amd64
       - ghcr.io/alindesign/snippy:latest-amd64
-  - goos: linux
-    goarch: arm64
-    build_flag_templates:
-      - "--platform=linux/arm64/v8"
-    dockerfile: Dockerfile
-    image_templates:
-      - ghcr.io/alindesign/snippy:{{ .Tag }}-arm64v8
-      - ghcr.io/alindesign/snippy:latest-arm64v8
-  - goos: linux
-    goarch: arm
-    build_flag_templates:
-      - "--platform=linux/arm/v6"
-    dockerfile: Dockerfile
-    image_templates:
-      - ghcr.io/alindesign/snippy:{{ .Tag }}-armv6
-      - ghcr.io/alindesign/snippy:latest-armv6
-  - goos: linux
-    goarch: arm
-    build_flag_templates:
-      - "--platform=linux/arm/v7"
-    dockerfile: Dockerfile
-    image_templates:
-      - ghcr.io/alindesign/snippy:{{ .Tag }}-armv7
-      - ghcr.io/alindesign/snippy:latest-armv7
 docker_manifests:
   - name_template: ghcr.io/alindesign/snippy:{{ .Tag }}
     image_templates:
       - ghcr.io/alindesign/snippy:{{ .Tag }}-amd64
-      - ghcr.io/alindesign/snippy:{{ .Tag }}-arm64v8
-      - ghcr.io/alindesign/snippy:{{ .Tag }}-armv7
-      - ghcr.io/alindesign/snippy:{{ .Tag }}-armv6
   - name_template: ghcr.io/alindesign/snippy:latest
     image_templates:
       - ghcr.io/alindesign/snippy:latest-amd64
-      - ghcr.io/alindesign/snippy:latest-arm64v8
-      - ghcr.io/alindesign/snippy:latest-armv7
-      - ghcr.io/alindesign/snippy:latest-armv6
