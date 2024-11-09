@@ -128,6 +128,12 @@ templ UpdateSnippetMain(snippet *Snippet) {
 				class="font-medium text-lg bg-transparent"
 			>{ snippet.Filename }</p>
 			<div class="flex items-center gap-4">
+				<button type="button" class="btn btn-sm btn-circle" id="clipboard">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard">
+						<rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+						<path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+					</svg>
+				</button>
 				<button
 					class="btn btn-sm"
 					hx-get="/snippets/_/defaultMain"
@@ -147,6 +153,15 @@ templ UpdateSnippetMain(snippet *Snippet) {
 		<script>
 			(() => {
 				document.getElementById('refresh-snippets').click();
+        const clipboard = document.getElementById('clipboard');
+        clipboard.addEventListener('click', () => {
+          navigator.clipboard
+            .writeText(document.getElementById('contents').value)
+            .then(() => {
+              clipboard.classList.add('btn-success');
+              setTimeout(() => clipboard.classList.remove('btn-success'), 1000);
+            });
+        });
 			})();
 		</script>
 	</form>
