@@ -1,0 +1,209 @@
+package internal
+
+import "fmt"
+
+func must(data []byte, err error) string {
+	if err != nil {
+		panic(err)
+	}
+
+	return string(data)
+}
+
+templ searchField() {
+	<header class="px-4 flex items-center border-b border-base-200 h-16 w-full gap-2">
+		<button
+			hx-get="/snippets/_/createForm"
+			hx-trigger="click"
+			hx-target="#snippet-main"
+			hx-swap="innerHTML"
+			class="btn btn-sm grow"
+		>
+			New Snippet
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-plus-2">
+				<path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4"></path>
+				<path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
+				<path d="M3 15h6"></path>
+				<path d="M6 12v6"></path>
+			</svg>
+		</button>
+		<button
+			hx-get="/snippets/_/updateList"
+			hx-trigger="click"
+			hx-target="#snippets-list"
+			hx-swap="outerHTML"
+			id="refresh-snippets"
+			class="btn btn-sm grow"
+		>
+			Refresh
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-cw">
+				<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+				<path d="M21 3v5h-5"></path>
+				<path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+				<path d="M8 16H3v5"></path>
+			</svg>
+		</button>
+	</header>
+}
+
+templ DefaultSnippetMain() {
+	<main class="flex grow justify-center items-center"></main>
+}
+
+templ ErrorSnippetMain(title string, message string) {
+	<main class="flex grow justify-center items-start py-8">
+		<div role="alert" class="alert alert-error max-w-sm">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-6 w-6 shrink-0 stroke-current"
+				fill="none"
+				viewBox="0 0 24 24"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+				></path>
+			</svg>
+			<div>
+				<h3 class="font-bold">{ title }</h3>
+				<div class="text-xs">{ message }</div>
+			</div>
+		</div>
+	</main>
+}
+
+templ CreateSnippetMain() {
+	<form
+		id="snippet-form"
+		class="flex flex-col grow"
+		hx-post="/snippets/_/create"
+		hx-trigger="submit"
+		hx-target="#snippet-main"
+		hx-swap="innerHTML"
+	>
+		<input type="hidden" name="filename" id="filename" value=""/>
+		<input type="hidden" name="contents" id="contents" value=""/>
+		<header class="px-4 flex items-center justify-between border-b border-base-200 h-16">
+			<p
+				id="filename-display"
+				class="font-medium text-lg bg-transparent"
+			></p>
+			<div class="flex items-center gap-4">
+				<button
+					class="btn btn-sm"
+					hx-get="/snippets/_/defaultMain"
+					hx-trigger="click"
+					hx-target="#snippet-main"
+					hx-swap="innerHTML"
+				>Cancel</button>
+				<button type="submit" class="btn btn-sm btn-primary">Create</button>
+			</div>
+		</header>
+		<main class="flex grow">
+			<div id="container" class="flex grow relative">
+				<span class="loading loading-spinner loading-lg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></span>
+			</div>
+			<script src={ asset("/assets/snippet-editor.js") }></script>
+		</main>
+	</form>
+}
+
+templ UpdateSnippetMain(snippet *Snippet) {
+	<form
+		id="snippet-form"
+		class="flex flex-col grow"
+		hx-post="/snippets/_/update"
+		hx-trigger="submit"
+		hx-target="#snippet-main"
+		hx-swap="innerHTML"
+	>
+		<input type="hidden" name="snippet_id" id="snippet_id" value={ snippet.ID }/>
+		<input type="hidden" name="filename" id="filename" value={ snippet.Filename }/>
+		<input type="hidden" name="contents" id="contents" value={ snippet.Contents }/>
+		<header class="px-4 flex items-center justify-between border-b border-base-200 h-16">
+			<p
+				id="filename-display"
+				class="font-medium text-lg bg-transparent"
+			>{ snippet.Filename }</p>
+			<div class="flex items-center gap-4">
+				<button
+					class="btn btn-sm"
+					hx-get="/snippets/_/defaultMain"
+					hx-trigger="click"
+					hx-target="#snippet-main"
+					hx-swap="innerHTML"
+				>Cancel</button>
+				<button type="submit" class="btn btn-sm btn-primary" disabled>Update</button>
+			</div>
+		</header>
+		<main class="flex grow">
+			<div id="container" class="flex grow relative">
+				<span class="loading loading-spinner loading-lg absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></span>
+			</div>
+			<script src={ asset("/assets/snippet-editor.js") }></script>
+		</main>
+		<script>
+			(() => {
+				document.getElementById('refresh-snippets').click();
+			})();
+		</script>
+	</form>
+}
+
+templ snippetList(snippets []*Snippet) {
+	<nav class="overflow-y-auto flex flex-col grow w-full" id="snippets-list">
+		for _, snippet := range snippets {
+			<div class="flex justify-between items-center hover:bg-base-200 border-b border-base-200 relative h-11">
+				<button
+					hx-get={ fmt.Sprintf("/snippets/_/updateForm?id=%s", snippet.ID) }
+					hx-trigger="click"
+					hx-target="#snippet-main"
+					hx-swap="innerHTML"
+					class="absolute inset-0 text-left pl-4 pr-12 text-ellipsis overflow-hidden"
+					title={ snippet.Filename }
+				>
+					{ snippet.Filename }
+				</button>
+				<button
+					hx-post={ fmt.Sprintf("/snippets/_/delete?id=%s", snippet.ID) }
+					hx-confirm={ fmt.Sprintf("You're going to delete '%s' snippet, are you sure?", snippet.Filename) }
+					hx-trigger="click"
+					hx-target="#snippets-list"
+					hx-swap="outerHTML"
+					class="w-8 h-8 rounded hover:bg-base-300 active:shadow-sm text-error absolute right-2 px-2 top-1/2 -translate-y-1/2"
+					title={ fmt.Sprintf("Delete '%s'", snippet.Filename) }
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2">
+						<path d="M3 6h18"></path>
+						<path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+						<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+						<line x1="10" x2="10" y1="11" y2="17"></line>
+						<line x1="14" x2="14" y1="11" y2="17"></line>
+					</svg>
+				</button>
+			</div>
+		}
+	</nav>
+}
+
+templ SnippetsPage(snippets []*Snippet, main templ.Component) {
+	@Layout(LayoutProps{
+		title: "Snippets - Snippy",
+	}) {
+		<div class="grid grow grid-cols-[320px_1fr]">
+			<aside class="flex flex-col items-start justify-start grow border-r border-base-200">
+				@searchField()
+				@snippetList(snippets)
+			</aside>
+			<aside class="flex flex-col grow" id="snippet-main">
+				if main != nil {
+					@main
+				} else {
+					@DefaultSnippetMain()
+				}
+			</aside>
+		</div>
+	}
+}

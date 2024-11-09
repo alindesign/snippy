@@ -1,0 +1,26 @@
+{
+  "name": "snippy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "air": "go run -mod=mod github.com/air-verse/air@latest",
+    "templ": "go run -mod=mod github.com/a-h/templ/cmd/templ@latest",
+    "wire": "go run -mod=mod github.com/google/wire/cmd/wire@latest",
+    "codegen": "pnpm templ generate && pnpm wire && pnpm css",
+    "css": "tailwindcss -i ./web/global.css -o ./web/assets/main.css",
+    "dev:css": "pnpm css --watch",
+    "dev:html": "pnpm templ generate -watch",
+    "dev": "pnpm dev:css & pnpm dev:html & pnpm air",
+    "build": "pnpm codegen && CGO_ENABLED=1 go build -ldflags \"-s -w\" -v ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@9.12.3",
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
+    "daisyui": "^4.12.14",
+    "tailwindcss": "^3.4.14"
+  }
+}
