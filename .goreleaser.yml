@@ -12,6 +12,7 @@ builds:
       - linux
     goarch:
       - amd64
+      - arm64
 archives:
   - format: tar.gz
 checksum:
@@ -26,10 +27,21 @@ dockers:
     image_templates:
       - ghcr.io/alindesign/snippy:{{ .Tag }}-amd64
       - ghcr.io/alindesign/snippy:latest-amd64
+  - goos: linux
+    goarch: arm64
+    build_flag_templates:
+      - "--platform=linux/arm64"
+
+    dockerfile: release.Dockerfile
+    image_templates:
+      - ghcr.io/alindesign/snippy:{{ .Tag }}-arm64
+      - ghcr.io/alindesign/snippy:latest-arm64
 docker_manifests:
   - name_template: ghcr.io/alindesign/snippy:{{ .Tag }}
     image_templates:
       - ghcr.io/alindesign/snippy:{{ .Tag }}-amd64
+      - ghcr.io/alindesign/snippy:{{ .Tag }}-arm64
   - name_template: ghcr.io/alindesign/snippy:latest
     image_templates:
       - ghcr.io/alindesign/snippy:latest-amd64
+      - ghcr.io/alindesign/snippy:latest-arm64
