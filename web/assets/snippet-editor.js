@@ -54,30 +54,31 @@
 
   window[editorSymbol]?.dispose();
   const editor = monaco.editor.create(container, {
-    value: `${createFilenameLine(filename.value)}\n${contents.value}`,
-    language: getLanguage(filename.value),
-    fontFamily: "JetBrains Mono",
-    fontSize: 18,
-    lineHeight: 1.4,
-    scrollBeyondLastLine: false,
-    detectIndentation: false,
-    theme: "GithubDark",
-    fontLigatures: true,
-    wordWrap: "on",
+    automaticLayout: true,
+    bracketPairColorization: {
+      enabled: true,
+    },
     cursorBlinking: "expand",
-    tabSize: 2,
+    detectIndentation: false,
+    fontFamily: "JetBrains Mono",
+    fontLigatures: true,
+    fontSize: 18,
     insertSpaces: true,
+    language: getLanguage(filename.value),
+    lineHeight: 1.4,
     padding: {
       top: 16,
       bottom: 16,
     },
-    bracketPairColorization: {
-      enabled: true,
-    },
+    scrollBeyondLastLine: false,
     suggest: {
       showFields: false,
       showFunctions: false,
     },
+    tabSize: 2,
+    theme: "GithubDark",
+    value: `${createFilenameLine(filename.value)}\n${contents.value}`,
+    wordWrap: "on",
   });
   window[editorSymbol] = editor;
 
@@ -128,8 +129,6 @@
         },
       ]);
     }
-
-    console.log(contents.value, getFormSubmit());
 
     if (contents.value) {
       getFormSubmit()?.removeAttribute("disabled");

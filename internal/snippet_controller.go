@@ -22,6 +22,7 @@ type SnippetController struct {
 
 func (c SnippetController) Handler(mux *http.ServeMux) {
 	mux.HandleFunc("GET /snippets", c.listPage)
+	mux.HandleFunc("GET /snippets/{id}", c.showPage)
 	mux.HandleFunc("GET /snippets/_/defaultMain", c.htmxDefaultMain)
 	mux.HandleFunc("GET /snippets/_/createForm", c.htmxCreateForm)
 	mux.HandleFunc("GET /snippets/_/updateForm", c.htmxUpdateForm)
@@ -136,6 +137,19 @@ func (c SnippetController) htmxDelete(writer http.ResponseWriter, request *http.
 }
 
 func (c SnippetController) listPage(writer http.ResponseWriter, request *http.Request) {
+	snippets, err := c.snippetService.GetSnippets()
+	if err != nil {
+		templ.Handler(SnippetsPage(snippets, ErrorSnippetMain(
+			"Unable to get snippets",
+			err.Error(),
+		))).ServeHTTP(writer, request)
+		return
+	}
+
+	templ.Handler(SnippetsPage(snippets, nil)).ServeHTTP(writer, request)
+}
+
+func (c SnippetController) showPage(writer http.ResponseWriter, request *http.Request) {
 	snippets, err := c.snippetService.GetSnippets()
 	if err != nil {
 		templ.Handler(SnippetsPage(snippets, ErrorSnippetMain(

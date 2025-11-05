@@ -1,6 +1,5 @@
 {
   "tailwindCSS.includeLanguages": {
     "templ": "html"
-  },
-  "cSpell.words": ["alindesign", "armv", "codegen", "goarch"]
+  }
 }

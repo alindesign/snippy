@@ -2,8 +2,6 @@ package internal
 
 import (
 	"net/http"
-
-	"github.com/a-h/templ"
 )
 
 func NewHomeController() HomeController {
@@ -14,11 +12,7 @@ type HomeController struct {
 }
 
 func (c HomeController) Handler(mux *http.ServeMux) {
-	mux.HandleFunc("GET /", c.homePage)
-}
-
-func (c HomeController) homePage(writer http.ResponseWriter, request *http.Request) {
-	component := HomePage()
-
-	templ.Handler(component).ServeHTTP(writer, request)
+	mux.HandleFunc("GET /", func(writer http.ResponseWriter, request *http.Request) {
+		http.Redirect(writer, request, "/snippets", http.StatusFound)
+	})
 }

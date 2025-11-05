@@ -34,9 +34,7 @@ func NewConfig() Config {
 
 type Config struct {
 	ApplicationCommand string
-
 	DatabaseConnection string
-
-	ServerPort string
-	ServerHost string
+	ServerPort         string
+	ServerHost         string
 }
