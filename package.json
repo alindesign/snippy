@@ -11,16 +11,18 @@
     "css": "tailwindcss -i ./web/global.css -o ./web/assets/main.css",
     "dev:css": "pnpm css --watch",
     "dev:html": "pnpm templ generate -watch",
-    "dev": "pnpm dev:css & pnpm dev:html & pnpm air",
+    "dev": "concurrently --kill-others -n 'CSS,HTML,GO' -c 'yellow.bold,green.bold,blue.bold' 'pnpm dev:css' 'pnpm dev:html' 'pnpm air'",
     "build": "pnpm codegen && CGO_ENABLED=1 go build -ldflags \"-s -w\" -v ."
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "packageManager": "pnpm@9.12.3",
+  "packageManager": "pnpm@10.20.0",
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.15",
-    "daisyui": "^4.12.14",
-    "tailwindcss": "^3.4.14"
+    "@tailwindcss/cli": "^4.1.16",
+    "@tailwindcss/typography": "^0.5.19",
+    "concurrently": "^9.2.1",
+    "daisyui": "^5.4.3",
+    "tailwindcss": "^4.1.16"
   }
 }
